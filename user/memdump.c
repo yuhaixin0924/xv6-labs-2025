@@ -60,6 +60,35 @@ main(int argc, char *argv[])
 void
 memdump(char *fmt, char *data)
 {
-  // Your code here.
-
+  for(int i=0;fmt[i]!='\0';i++){
+    if(fmt[i]=='i'){
+      int value=*(int *)data;
+      printf("%d\n",value);
+      data+=sizeof(int);//data本质是一个沿着字节移动的游标
+    }
+    else if(fmt[i]=='S'){
+      printf("%s\n",data);
+      data+=strlen(data)+1;
+    }
+    else if(fmt[i]=='s'){
+      char *string=*(char ** )data;
+      printf("%s\n",string);
+      data+=sizeof(char*);
+    }
+    else if(fmt[i]=='h'){
+      short h=*(short *)data;
+      printf("%d\n",h);
+      data += sizeof(short);
+    }
+    else if(fmt[i]=='c'){
+      char c = *(char *)data;
+      printf("%c\n", c);
+      data += sizeof(char);
+    }
+    else if(fmt[i]=='p'){
+      uint64 p = *(uint64 *)data;
+      printf("%lx\n", p);
+      data += sizeof(uint64);
+    }
+  }
 }
