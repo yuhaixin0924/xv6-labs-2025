@@ -105,3 +105,13 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+uint64
+sys_interpose(void)
+{
+  int value;
+  argint(0,&value);
+  struct proc *p=myproc();//找到当前发起系统调用的进程,返回它的struct proc指针
+  p->mask=value;
+  if (argstr(1, p->path, sizeof(p->path)) < 0)return -1;
+  return 0;
+}

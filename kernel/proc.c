@@ -124,7 +124,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-
+  p->mask=0;
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
     freeproc(p);
@@ -256,50 +256,56 @@ growproc(int n)
 int
 kfork(void)
 {
-  int i, pid;
-  struct proc *np;
-  struct proc *p = myproc();
+  int i, pid;// i 用于循环；pid 保存子进程编号
+  struct proc *np;// 指针：稍后指向子进程的内核记录
+  struct proc *p = myproc();// 找到当前进程，也就是父进程的记录
 
+  // 创建子进程的基本记录，分配 trapframe、页表等。
+  // 成功后，np->lock 仍然持有。
   // Allocate process.
   if((np = allocproc()) == 0){
     return -1;
   }
-
+  // 把父进程的用户内存复制给子进程。
+  // 参数依次是：父页表、子页表、需要复制的内存大小。
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
-    freeproc(np);
-    release(&np->lock);
-    return -1;
+    freeproc(np);// 复制失败，回收已经分配的子进程资源
+    release(&np->lock);// // 释放子进程记录上的锁
+    return -1;//报告 fork 失败
   }
-  np->sz = p->sz;
-
+  np->sz = p->sz;// 记录子进程的用户内存大小
+  np->mask = p->mask;//复制父进程的限制设置（新增）
   // copy saved user registers.
-  *(np->trapframe) = *(p->trapframe);
-
+  *(np->trapframe) = *(p->trapframe);// 将父进程保存的寄存器等状态，复制到子进程自己的 trapframe。
+  // a0 用于传递系统调用返回值。
+  // 子进程恢复到用户态时，将看到 fork() 返回 0。
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
 
   // increment reference counts on open file descriptors.
-  for(i = 0; i < NOFILE; i++)
-    if(p->ofile[i])
+  for(i = 0; i < NOFILE; i++)// 遍历所有文件描述符位置
+    if(p->ofile[i])// 这个位置确实打开了文件
       np->ofile[i] = filedup(p->ofile[i]);
-  np->cwd = idup(p->cwd);
+      // filedup 增加引用计数。
+      // 父子进程共同引用同一个内核打开文件对象。
+  np->cwd = idup(p->cwd);// 继承当前目录，增加对应引用计数
 
-  safestrcpy(np->name, p->name, sizeof(p->name));
+  safestrcpy(np->name, p->name, sizeof(p->name));// 将父进程名称复制给子进程，并限制复制长度。
+  safestrcpy(np->path, p->path, sizeof(np->path));//将父进程path数组复制给子进程
+  pid = np->pid;// 保存子进程编号，供最后返回
 
-  pid = np->pid;
+  release(&np->lock);// 暂时释放子进程记录的锁
 
-  release(&np->lock);
+  acquire(&wait_lock);// 获取保护父子关系的锁
+  np->parent = p;// 记录：这个子进程的父亲是 p
+  release(&wait_lock);// 修改完成，释放锁
 
-  acquire(&wait_lock);
-  np->parent = p;
-  release(&wait_lock);
+  acquire(&np->lock);// 修改子进程状态前，获取它的锁
+  np->state = RUNNABLE;// 设为就绪，允许调度器选择它运行
+  release(&np->lock);// 修改完成，释放锁
 
-  acquire(&np->lock);
-  np->state = RUNNABLE;
-  release(&np->lock);
-
-  return pid;
+  return pid;// 父进程的 fork() 将返回子进程 PID
 }
 
 // Pass p's abandoned children to init.

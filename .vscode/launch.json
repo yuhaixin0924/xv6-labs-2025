@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "xv6 内核：连接 QEMU",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/kernel/kernel",
+      "cwd": "${workspaceFolder}/.vscode",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/opt/homebrew/bin/riscv64-elf-gdb",
+      "miDebuggerArgs": "-nx",
+      "miDebuggerServerAddress": "127.0.0.1:25501",
+      "stopAtEntry": false,
+      "stopAtConnect": false,
+      "launchCompleteCommand": "exec-continue",
+      "externalConsole": false,
+      "setupCommands": [
+        {
+          "text": "set architecture riscv:rv64",
+          "ignoreFailures": false
+        },
+        {
+          "text": "set riscv use-compressed-breakpoints yes",
+          "ignoreFailures": false
+        },
+        {
+          "text": "set tcp auto-retry on",
+          "ignoreFailures": false
+        }
+      ],
+      "preLaunchTask": "xv6：启动 QEMU 调试模式"
+    }
+  ]
+}
