@@ -449,18 +449,19 @@ scheduler(void)
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
-        swtch(&c->context, &p->context);
+        //swtch(当前现场保存到哪里, 目标现场从哪里恢复);
+        swtch(&c->context, &p->context);//负责切换执行现场，让 CPU 暂停执行调度器，转去继续执行被选中的进程
 
         // Process is done running for now.
         // It should have changed its p->state before coming back.
-        c->proc = 0;
-        found = 1;
+        c->proc = 0;//清除“正在运行哪个进程”的记录。
+        found = 1;//释放保护这个进程管理记录的锁
       }
       release(&p->lock);
     }
     if(found == 0) {
       // nothing to run; stop running on this core until an interrupt.
-      asm volatile("wfi");
+      asm volatile("wfi");//让这个 CPU 等待中断
     }
   }
 }
