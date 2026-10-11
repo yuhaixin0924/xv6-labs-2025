@@ -91,6 +91,9 @@ OBJDUMP = $(TOOLPREFIX)objdump
 CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS = -Wall -Werror -Wno-unknown-attributes -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 
+# GCC 16 warns about an unused counter in the supplied usertests.
+CFLAGS += -Wno-error=unused-but-set-variable
+
 ifdef LAB
 LABUPPER = $(shell echo $(LAB) | tr a-z A-Z)
 XCFLAGS += -DSOL_$(LABUPPER) -DLAB_$(LABUPPER)
@@ -222,7 +225,8 @@ endif
 ifeq ($(LAB),traps)
 UPROGS += \
 	$U/_call\
-	$U/_bttest
+	$U/_bttest\
+	$U/_alarmtest
 endif
 
 ifeq ($(LAB),lazy)

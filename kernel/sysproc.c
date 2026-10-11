@@ -81,6 +81,7 @@ sys_pause(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
+  backtrace();
   return 0;
 }
 
@@ -104,4 +105,24 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+uint64
+sys_sigalarm(void){
+  struct proc *p = myproc();
+
+  argint(0, &p->alarm_interval);   // 第一个参数：2
+  argaddr(1, &p->alarm_handler);  // 第二个参数：periodic 的地址
+  p->alarm_ticks = 0;             // 从零开始计时
+
+  return 0;//回复设置成功
+}
+uint64
+sys_sigreturn(void){
+  struct proc *p = myproc();
+  if(p->alarm_active == 0)
+    return -1;
+  *p->trapframe=p->alarm_saved;
+  p->alarm_active=0;
+  p->alarm_ticks=0;
+  return p->trapframe->a0;//保证返回值和原来终端时的a0相同
 }
