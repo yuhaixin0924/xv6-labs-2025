@@ -110,4 +110,8 @@ struct proc {
   int alarm_active;
   uint64 alarm_handler;
   struct trapframe alarm_saved;
+
+
+  int yield_ticks; // ⾃定义时间⽚⻓度
+  int tick_count; // 已累计运⾏的 tick 数
 };

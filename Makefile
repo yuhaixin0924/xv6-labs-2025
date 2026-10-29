@@ -199,7 +199,8 @@ UPROGS=\
 	$U/_logstress\
 	$U/_forphan\
 	$U/_dorphan\
-
+	$U/_hello_test\
+	$U/_setyield_test\
 
 
 ifeq ($(LAB),util)

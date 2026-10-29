@@ -126,3 +126,22 @@ sys_sigreturn(void){
   p->alarm_ticks=0;
   return p->trapframe->a0;//保证返回值和原来终端时的a0相同
 }
+uint64
+sys_hello(void){
+    printf("Hello, xv6 kernel!\n");
+    return 0;
+}
+uint64
+sys_set_yield(void){
+  int n;
+  argint(0,&n);
+  if(n<0) return -1;//(n<0 视为⾮法)
+  struct proc *p=myproc();
+  acquire(&p->lock);
+
+  p->yield_ticks=n;
+  p->tick_count=0;
+  
+  release(&p->lock);
+  return 0;
+}

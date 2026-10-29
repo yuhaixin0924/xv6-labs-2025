@@ -26,6 +26,8 @@ int pause(int);
 int uptime(void);
 int sigalarm(int ticks, void (*handler)(void));
 int sigreturn(void);
+int hello(void);
+int set_yield(int);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

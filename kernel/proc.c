@@ -125,6 +125,9 @@ found:
   p->pid = allocpid();
   p->state = USED;
 
+  p->yield_ticks = 0;
+  p->tick_count = 0;
+
   p->alarm_active=0;
   p->alarm_interval=0;
   p->alarm_ticks=0;

@@ -44,3 +44,5 @@ entry("pause");
 entry("uptime");
 entry("sigalarm");
 entry("sigreturn");
+entry("hello");
+entry("set_yield");
