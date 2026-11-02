@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "name": "xv6 lock",
+      "compilerPath": "/opt/homebrew/bin/riscv64-unknown-elf-gcc",
+      "compilerArgs": [
+        "-ffreestanding",
+        "-mcmodel=medany"
+      ],
+      "includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/kernel"
+      ],
+      "defines": [
+        "LAB_LOCK",
+        "SOL_LOCK"
+      ],
+      "cStandard": "gnu23"
+    }
+  ],
+  "version": 4
+}

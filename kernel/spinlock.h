@@ -16,5 +16,9 @@ struct spinlock {
 struct rwspinlock {
   // Replace this with your implementation.
   struct spinlock l;
+  int readers;          // 正在读取的人数
+  int writer;           // 是否有写者正在写：0 没有，1 有
+  int waiting_writers;  // 正在等待的写者人数
 };
 #endif
+
