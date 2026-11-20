@@ -112,6 +112,7 @@ void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
 void            push_off(void);
 void            pop_off(void);
+void            pcqinit(void);
 
 // sleeplock.c
 void            acquiresleep(struct sleeplock*);

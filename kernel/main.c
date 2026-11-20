@@ -28,6 +28,7 @@ main()
     iinit();         // inode table
     fileinit();      // file table
     virtio_disk_init(); // emulated hard disk
+    pcqinit();       // 用于初始化共享生产者消费者队列的锁
     userinit();      // first user process
     __sync_synchronize();
     started = 1;

@@ -25,6 +25,8 @@ char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
 int interpose(int mask,char* path);
+int qput(int);
+int qget(int *);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -30,7 +30,8 @@ OBJS = \
   $K/sysfile.o \
   $K/kernelvec.o \
   $K/plic.o \
-  $K/virtio_disk.o
+  $K/virtio_disk.o \
+  $K/pcqueue.o
 
 OBJS_KCSAN = \
   $K/start.o \
@@ -180,6 +181,8 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 
 UPROGS=\
 	$U/_cat\
+	$U/_pcqtest\
+	$U/_pipedemo\
 	$U/_echo\
 	$U/_forktest\
 	$U/_grep\
