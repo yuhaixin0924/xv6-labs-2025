@@ -49,10 +49,10 @@ freerange(void *pa_start, void *pa_end)
 void
 kfree(void *pa)
 {
-  push_off();
+  push_off();//关闭当前CPU中断，保证这里使用的 CPU 编号稳定
   int id =cpuid();
   struct run *r;
-
+  //地址不是页的起始位置｜｜地址不是落在内核结束位置之前｜｜地址超出管理范围
   if(((uint64)pa % PGSIZE) != 0 || (char*)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
@@ -91,7 +91,7 @@ kalloc(void)
         continue;
       }
       else {
-        acquire(&kmem[i].lock);
+        acquire(&kmem[i].lock);//防止多个CPU同时修改同一条链表，其实这里面也有push_off&pop_off
         r = kmem[i].freelist;
         if(r){
           kmem[i].freelist = r->next;
@@ -103,5 +103,5 @@ kalloc(void)
   pop_off();
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
-  return (void*)r;
+  return (void*)r;//只要返回的是非零地址说明分配成功
 }
