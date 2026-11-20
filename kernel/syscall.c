@@ -155,6 +155,7 @@ static uint64 (*syscalls[])(void) = {
 #endif
 #ifdef LAB_LOCK
 [SYS_rwlktest] sys_rwlktest,
+[SYS_rwsleeptest] sys_rwsleeptest,
 [SYS_cpupin] sys_cpupin,
 #endif
 };

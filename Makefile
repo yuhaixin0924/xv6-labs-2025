@@ -46,6 +46,8 @@ endif
 
 ifeq ($(LAB),lock)
 OBJS += \
+	$K/rwsleeplock.o\
+	$K/rwsleeptest.o\
 	$K/stats.o\
 	$K/sprintf.o
 endif
@@ -259,7 +261,8 @@ ifeq ($(LAB),lock)
 UPROGS += \
 	$U/_kalloctest\
 	$U/_stats\
-	$U/_rwlktest
+	$U/_rwlktest\
+	$U/_rwsleeptest
 endif
 
 ifeq ($(LAB),fs)

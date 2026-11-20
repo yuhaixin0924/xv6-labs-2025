@@ -14,6 +14,7 @@ struct stat;
 struct superblock;
 #ifdef LAB_LOCK
 struct rwspinlock;
+struct rwsleeplock;
 #endif
 
 // bio.c
@@ -128,6 +129,13 @@ void            read_release(struct rwspinlock*);
 void            write_acquire(struct rwspinlock*);
 void            write_release(struct rwspinlock*);
 uint64          sys_rwlktest(void);
+void            rwsleepinit(struct rwsleeplock*);
+void            rwsleep_read_acquire(struct rwsleeplock*);
+void            rwsleep_read_release(struct rwsleeplock*);
+void            rwsleep_write_acquire(struct rwsleeplock*);
+void            rwsleep_write_release(struct rwsleeplock*);
+void            rwsleeptestinit(void);
+uint64          sys_rwsleeptest(void);
 #endif
 
 // sleeplock.c

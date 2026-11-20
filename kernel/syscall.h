@@ -37,3 +37,4 @@
 #define SYS_kpgtbl    34
 #define SYS_rwlktest  35
 #define SYS_cpupin    36
+#define SYS_rwsleeptest 37

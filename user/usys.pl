@@ -49,4 +49,5 @@ entry("recv");
 entry("pgpte");
 entry("kpgtbl");
 entry("rwlktest");
+entry("rwsleeptest");
 entry("cpupin");
